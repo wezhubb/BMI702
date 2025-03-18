@@ -7,6 +7,13 @@ from keras._tf_keras.keras.preprocessing.image import load_img, img_to_array
 from sklearn.model_selection import train_test_split
 from PIL import Image
 import shutil
+import random
+
+# Set random seed for reproducibility
+SEED = 88
+np.random.seed(SEED)
+random.seed(SEED)
+tf.random.set_seed(SEED)
 
 # Define paths
 data_folder = "data"  # Folder where HR images are stored
@@ -150,22 +157,22 @@ def classify_and_move_images():
                 except Exception as e:
                     print(f"Error processing {filename}: {e}")
 
-def load_images_from_folder(folder, target_size=None):
-    images = []
-    for filename in os.listdir(folder):
-        img_path = os.path.join(folder, filename)
-        img = cv2.imread(img_path)  # Read image
-        if img is None:
-            print(f"Skipping corrupted file: {filename}")
-            continue
-        # height, width, channels = img.shape
-        # print(f"Loaded {filename}: Shape = {height} x {width} x {channels}")  # Print dimensions
+# def load_images_from_folder(folder, target_size=None):
+#     images = []
+#     for filename in os.listdir(folder):
+#         img_path = os.path.join(folder, filename)
+#         img = cv2.imread(img_path)  # Read image
+#         if img is None:
+#             print(f"Skipping corrupted file: {filename}")
+#             continue
+#         # height, width, channels = img.shape
+#         # print(f"Loaded {filename}: Shape = {height} x {width} x {channels}")  # Print dimensions
 
-        if target_size:
-            img = cv2.resize(img, target_size)  # Resize if needed
-        img = img / 255.0  # Normalize to [0, 1]
-        images.append(img)
-    return np.array(images)
+#         if target_size:
+#             img = cv2.resize(img, target_size)  # Resize if needed
+#         img = img / 255.0  # Normalize to [0, 1]
+#         images.append(img)
+#     return np.array(images)
 
 
 # Run the classification

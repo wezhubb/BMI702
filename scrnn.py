@@ -22,7 +22,8 @@ def build_scrnn(input_shape=(150, 112, 3)):  # Set fixed spatial dimensions (Hei
     x = Conv2D(64, (5, 5), activation="relu", padding="same")(inputs)
 
     # ✅ Fix: Add an explicit time dimension
-    x = Lambda(lambda t: tf.expand_dims(t, axis=1))(x)  # Shape becomes (batch, 1, height, width, channels)
+    # x = Lambda(lambda t: tf.expand_dims(t, axis=1))(x)  # Shape becomes (batch, 1, height, width, channels)
+    x = Lambda(lambda t: tf.expand_dims(t, axis=1), output_shape=(1, input_shape[0], input_shape[1], 64))(x)
 
     # Non-linear mapping
     # ConvLSTM2D expects a 5D input: (batch, time, height, width, channels)
