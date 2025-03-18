@@ -1,0 +1,33 @@
+# Ignore Python compiled files
+__pycache__/
+*.py[cod]
+*.so
+
+# Ignore Data files
+data/
+dataset/
+
+# Ignore virtual environment
+bmi702_env/
+env/
+venv/
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore log files
+*.log
+
+# Ignore dataset files (if applicable)
+*.csv
+*.npy
+*.pkl
+
+# Ignore model checkpoints
+checkpoints/
+*.ckpt
+*.hdf5
+
+# Ignore system files
+.DS_Store
+Thumbs.db
