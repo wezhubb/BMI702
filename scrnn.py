@@ -1,6 +1,6 @@
 import tensorflow as tf
 from tensorflow import keras
-from keras.layers import Input, Conv2D, ConvLSTM2D, UpSampling2D, Lambda
+from keras.layers import Layer, Input, Conv2D, ConvLSTM2D, UpSampling2D, Lambda
 from keras.models import Model
 import os
 import cv2
@@ -14,6 +14,11 @@ reconstruction
 
 """
 
+class ExpandDimsLayer(Layer):
+    def call(self, inputs):
+        return tf.expand_dims(inputs, axis=1)
+
+
 # Define SCRNN with a fixed spatial input size
 def build_scrnn(input_shape=(150, 112, 3)):  # Set fixed spatial dimensions (Height x Width)
     inputs = Input(shape=input_shape)
@@ -23,7 +28,8 @@ def build_scrnn(input_shape=(150, 112, 3)):  # Set fixed spatial dimensions (Hei
 
     # ✅ Fix: Add an explicit time dimension
     # x = Lambda(lambda t: tf.expand_dims(t, axis=1))(x)  # Shape becomes (batch, 1, height, width, channels)
-    x = Lambda(lambda t: tf.expand_dims(t, axis=1), output_shape=(1, input_shape[0], input_shape[1], 64))(x)
+    #x = Lambda(lambda t: tf.expand_dims(t, axis=1), output_shape=(1, input_shape[0], input_shape[1], 64))(x)
+    x = ExpandDimsLayer()(x)
 
     # Non-linear mapping
     # ConvLSTM2D expects a 5D input: (batch, time, height, width, channels)
@@ -40,9 +46,9 @@ def build_scrnn(input_shape=(150, 112, 3)):  # Set fixed spatial dimensions (Hei
 
 # Build and compile the model with the fixed input size
 # 150 is height, 112 is width, and 3 is the number of channels (RGB)
-scrnn = build_scrnn(input_shape=(150, 112, 3))  # Or (112, 150, 3) for portrait mode
-scrnn.compile(optimizer="adam", loss="mse")
-scrnn.summary()
+# scrnn = build_scrnn(input_shape=(150, 112, 3))  # Or (112, 150, 3) for portrait mode
+# scrnn.compile(optimizer="adam", loss="mse")
+# scrnn.summary()
 """
 Model: "functional"
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┓
