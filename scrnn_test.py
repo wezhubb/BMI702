@@ -3,12 +3,13 @@ import numpy as np
 from tensorflow.keras.models import load_model
 import tensorflow as tf
 from scrnn import ExpandDimsLayer
+import os
 
  
 
 # ✅ Load the Model with Custom Layer Registered
 custom_objects = {"ExpandDimsLayer": ExpandDimsLayer}
-scrnn = load_model("scrnn_model.h5", custom_objects=custom_objects, compile=False)
+scrnn = load_model("scrnn_result/scrnn_50epoach.h5", custom_objects=custom_objects, compile=False)
 scrnn.compile(optimizer="adam", loss=tf.keras.losses.MeanSquaredError())
 scrnn._name = "SCRNN_Model"
 scrnn.summary()
@@ -27,19 +28,29 @@ scrnn.summary()
 # # Print summary to verify the model is loaded
 # scrnn.summary()
 
+input_dir = "dataset/test/lr/portrait/"
+output_dir = "dataset/test/result/portrait/"
+os.makedirs(output_dir, exist_ok=True)
+
+
+for filename in os.listdir(input_dir):
+    if filename.endswith(".png"):
+        input_path = os.path.join(input_dir, filename)
 
 # Load a new low-resolution image
-lr_test = cv2.imread("dataset/test/lr/portrait/1.png") / 255.0  # Normalize
-lr_test = np.expand_dims(lr_test, axis=0)  # Add batch dimension
+        lr_test = cv2.imread(input_path) / 255.0  # Normalize
+        lr_test = np.expand_dims(lr_test, axis=0)  # Add batch dimension
 
-# Predict high-resolution image
-hr_predicted = scrnn.predict(lr_test)
+        # Predict high-resolution image
+        hr_predicted = scrnn.predict(lr_test)
 
-# Convert back to an image format
-hr_predicted = (hr_predicted[0] * 255).astype(np.uint8)
+        # Convert back to an image format
+        hr_predicted = (hr_predicted[0] * 255).astype(np.uint8)
 
-# Save or display the output
-cv2.imwrite("output_hr.png", hr_predicted)
+        # Save or display the output
+        output_path = os.path.join(output_dir, filename)
+        cv2.imwrite(output_path, hr_predicted)
+        # cv2.imwrite("output_hr.png", hr_predicted)
 # cv2.imshow("Super-Resolved Image", hr_predicted)
 # cv2.waitKey(0)
 # cv2.destroyAllWindows()

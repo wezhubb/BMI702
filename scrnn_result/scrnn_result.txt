@@ -9,3 +9,8 @@ SSIM: 0.9161
 PSNR: 37.80 dB
 MSE: 11.37
 FSIM: 0.9993
+Average across all test portait
+Average SSIM: 0.9005
+Average PSNR: 36.92 dB
+Average MSE: 22.14
+Average FSIM: 0.9988
